@@ -8,18 +8,22 @@ class Data{
 	public:
 		int id;
 		int quantity;
+		string customer_name;
+		string item_name;
 		
 		Data(){
 			id = num_orders++;
 		}
 		
-		Data(int id, int quantity){
+		Data(int id){
 			this->id = id;
-			this->quantity = quantity;
 		}
 		
 		void display(){
-			cout << "ID: " << id << ", Quantity: " << quantity << endl;
+			cout << "ID: " << id << 
+				    ", Item: " << item_name << 
+					", Quantity: " << quantity << 
+					", Customer name: " << customer_name << endl;
 		}
 };
 
@@ -59,7 +63,7 @@ class SLL{
 		Node *to_remove = head;
 		if(head == NULL){
 			cout << "List empty" << endl;
-			return Data(-1,0);
+			return Data(-1);
 		}
 		else if(head->next == NULL){
 			head = NULL;
@@ -89,9 +93,10 @@ class Restaurant{
 		SLL orders;
 		
 	void take_order(){
-		int quantity;
-		cout << "Enter quantity: "; cin >> quantity;
-		orders.add_at_end()->data.quantity = quantity;
+		Data *order = &(orders.add_at_end()->data);
+		cout << "Enter item name: "; cin >> order->item_name;
+		cout << "Enter quantity: "; cin >> order->quantity;
+		cout << "Enter customer name: "; cin >> order->customer_name;
 	}
 	
 	void process_order(){
