@@ -2,6 +2,8 @@
 using namespace std;
 #include <cstring>
 #include <cmath>
+#include <string>
+
 #define max 50
 
 class Stack
@@ -17,6 +19,7 @@ class Stack
 	bool isfull();
 	void push(string s1);
 	string pop();
+	void display();
 };
 
 class expression
@@ -27,8 +30,16 @@ class expression
 	int optr(string c) ;
 	void prefix_to_infix();
 	void infix_to_postfix();
-	void postfix();
+	void postfix_eval();
 };
+
+void Stack::display(){
+	for(int i = 0; i <= top; i++)
+	{
+		cout << st[i] << " ";
+	}
+	cout << endl;
+}
 
 bool Stack::isempty(){ return top == -1; }
 bool Stack::isfull(){ return top == max-1; }
@@ -65,8 +76,8 @@ void expression::infix_to_postfix(){
 		if(isdigit(current)){
 			number += current;
 			if(i == len-1 || !isdigit(infix[i+1])){
-			postfix += number + " ";
-			number = "";
+				postfix += number + " ";
+				number = "";
 			}
 		}
 		else if(isalpha(current)){
@@ -108,6 +119,97 @@ bool expression::isoperator(char c){
 	return (c == '+' || c == '-' || c == '*' || c == '/' || c == '^');
 }
 
+void expression::prefix_to_infix()
+{
+	Stack s;
+	string prefix, infix;
+	cout<<"Enter the prefix expression"<<endl;
+	cin.ignore();
+	getline(cin,infix);
+	int len = infix.length();
+	string number = "";
+	
+	for(int i = len-1; i >= 0; i--)
+	{
+		//cout << "what" << endl;
+		if(isoperator(prefix[i]))
+		{
+			string x = s.pop();
+			string y = s.pop();
+			string temp = "(" + x + prefix[i] + y + ")";
+			//cout << temp << endl;
+			//cout << "what" << endl;
+			s.push(temp);
+			//cout << s.st[s.top] << endl;
+			
+
+		}
+		else
+		{
+			s.push(string(1,prefix[i]));
+		}
+		
+		//cout << s.st[s.top];
+		//cout << s.top << endl;
+	}
+	
+	cout << s.pop() << endl;
+}
+
+void expression::postfix_eval()
+{
+	Stack s;
+	string postfix;
+	int a, b;
+	cout << "Enter postfix expression: ";
+	cin.ignore();
+	cin.getline(postfix);
+	string number = "";
+	int len = postfix.length();
+	
+	for(int i = 0; i < len; i++)
+	{
+		char current = postfix[i];
+		if(isdigit(current))
+		{
+			number += current;
+			if(i == len-1 || !isdigit(postfix[i+1]))
+			{
+				s.push(number);
+				number = "";
+			}
+		}
+		else
+		{
+			a = atoi(s.pop());
+			b = atoi(s.pop());
+			switch(current)
+			{
+				case '+':
+					result = b+a;
+					break;
+				case '-':
+					result = b-a;
+					break;
+				case '*':
+					result = b*a;
+					break;
+				case '/':
+					result = b/a;
+					break;
+				case '^':
+					result = pow(b, a);
+					break;
+				default:
+					cout << "Invalid operator" << endl;
+			}
+			s.push(result);
+		}
+	}
+	
+	cout << s.pop() << endl;
+}
+
 int main(){
 	expression E;
 	int choice;
@@ -123,6 +225,7 @@ int main(){
 			E.infix_to_postfix();
 			break;
 		case 2:
+			E.prefix_to_infix();
 			break;
 		case 3:
 			break;
